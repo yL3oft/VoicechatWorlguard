@@ -12,6 +12,7 @@ import de.maxhenkel.voicechat.api.events.EventRegistration;
 import de.maxhenkel.voicechat.api.events.MicrophonePacketEvent;
 import de.maxhenkel.voicechat.api.events.EntitySoundPacketEvent;
 import de.maxhenkel.voicechat.api.events.VoiceDistanceEvent;
+import me.yleoft.voicechatWorlguard.worldguard.Flags;
 import org.bukkit.entity.Player;
 
 public class WorldguardVoicechatPlugin implements VoicechatPlugin {
@@ -27,7 +28,7 @@ public class WorldguardVoicechatPlugin implements VoicechatPlugin {
 
     @Override
     public void initialize(VoicechatApi api) {
-        VoicechatWorlguard.getInstance().getLogger().info("Worldguard voicechat plugin initialized by voicechat API");
+        VoicechatWorldguard.getInstance().getLogger().info("Worldguard voicechat plugin initialized by voicechat API");
     }
 
     @Override
@@ -59,11 +60,11 @@ public class WorldguardVoicechatPlugin implements VoicechatPlugin {
             RegionQuery query = container.createQuery();
             ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
 
-            if(!set.testState(localPlayer, VoicechatWorlguard.vcEnabledFlag)) {
+            if(!set.testState(localPlayer, Flags.VOICECHAT_ENABLED)) {
                 event.cancel();
             };
         }catch (Exception e) {
-            VoicechatWorlguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat:");
+            VoicechatWorldguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat:");
         }
     }
     private void onProcessDistance(VoiceDistanceEvent event) {
@@ -84,12 +85,12 @@ public class WorldguardVoicechatPlugin implements VoicechatPlugin {
             ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
 
             try {
-                event.setDistance(set.queryValue(localPlayer, VoicechatWorlguard.vcDistanceFlag));
+                event.setDistance(set.queryValue(localPlayer, Flags.VOICECHAT_DISTANCE));
             }catch (Exception ignored) {
             }
         }
         catch (Exception e) {
-            VoicechatWorlguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat.");
+            VoicechatWorldguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat.");
         }
     }
     private void onListen(EntitySoundPacketEvent event) {
@@ -110,11 +111,11 @@ public class WorldguardVoicechatPlugin implements VoicechatPlugin {
             RegionQuery query = container.createQuery();
             ApplicableRegionSet set = query.getApplicableRegions(localPlayer.getLocation());
 
-            if(set.testState(localPlayer, VoicechatWorlguard.vcMutedFlag)) {
+            if(set.testState(localPlayer, Flags.VOICECHAT_MUTED)) {
                 event.cancel();
             };
         }catch (Exception e) {
-            VoicechatWorlguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat:");
+            VoicechatWorldguard.getInstance().getLogger().severe("Error checking WorldGuard regions for voicechat:");
         }
     }
 
